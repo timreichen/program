@@ -7,24 +7,16 @@ command-line interface for deno programs.
 // cli.ts
 import { Program } from "https://raw.githubusercontent.com/timreichen/program/master/mod.ts"
 
-function log(args: { [option: string]: any }) {
-  if (!args.quiet) { return }
+function log(args: any) {
+  if (args.quiet) { return }
   console.log(args)
 }
 
 const program = new Program({ name: "logger", description: "program that logs", version: "1.0.1" })
 
 program
-  .command({
-    name: "log",
-    description: "logs parsed arguments",
-    fn: log
-  })
-  .option({
-    name: "quiet",
-    alias: "q",
-    description: "Suppress diagnostic output",
-  })
+  .command({ name: "log", description: "logs parsed arguments", fn: log })
+  .option({ name: "quiet", alias: "q", description: "Suppress diagnostic output" })
   .argument({ name: "source_file", multiple: true, optional: true })
 
 program.parse(Deno.args)
