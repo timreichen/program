@@ -12,7 +12,7 @@ function log(args: { [option: string]: any }) {
   console.log(args)
 }
 
-const program = new Program({ name: "logger", description: "program that logs", version: "1.0.1", fn: log })
+const program = new Program({ name: "logger", description: "program that logs", version: "1.0.1" })
 
 program
   .command({
