@@ -1,4 +1,4 @@
-import { Program } from "https://raw.githubusercontent.com/timreichen/cli/master/mod.ts"
+import { Program } from "https://raw.githubusercontent.com/timreichen/program/master/mod.ts"
 
 function log(args: { [option: string]: any }) {
   if (args.quiet) { return }

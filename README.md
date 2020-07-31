@@ -1,11 +1,11 @@
-# cli
+# Program
 
-command-line interface for deno. Inspired by Yargs and Commanderjs.
+command-line interface for deno.
 
 ## Usage
 ```ts
 // cli.ts
-import { Program } from "https://raw.githubusercontent.com/timreichen/cli/master/mod.ts"
+import { Program } from "https://raw.githubusercontent.com/timreichen/program/master/mod.ts"
 
 function log(args: { [option: string]: any }) {
   if (!args.quiet) { return }
@@ -39,7 +39,7 @@ Output:
 ```
 
 ## Help
-Cli generates help for program and subcommands automatically.
+Program generates help for program and subcommands automatically.
 
 ### Program
 
