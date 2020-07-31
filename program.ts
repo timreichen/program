@@ -71,7 +71,7 @@ class Command {
 export class Program extends Command {
   version?: string
   commands: { [name: string]: Command }
-  constructor({ name, description, version, fn = () => { } }: { name: string, description: string, version?: string, fn: Function }) {
+  constructor({ name, description, version, fn = () => { } }: { name: string, description: string, version?: string, fn?: Function }) {
     super({ name, description, fn })
     this.version = version
     this.commands = {}
