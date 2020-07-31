@@ -5,7 +5,7 @@ command-line interface for deno. Inspired by Yargs and Commanderjs.
 ## Usage
 ```ts
 // cli.ts
-import { Program } from "https://raw.githubusercontent.com/timreichen/cli/master/mod.ts'
+import { Program } from "https://raw.githubusercontent.com/timreichen/cli/master/mod.ts"
 
 function log(args: { [option: string]: any }) {
   if (!args.quiet) { return }
@@ -35,7 +35,7 @@ deno run cli.ts log hello world
 ```
 Output:
 ```sh
-[ "hello", "world" ]
+{ _: [ "hello", "world" ] }
 ```
 
 ## Help
