@@ -52,7 +52,8 @@ class Command {
         return object
       }, {} as { [name: string]: string }),
     }
-    const { _, help } = parse(args, argParsingOptions)
+    const parsedArgs = parse(args, argParsingOptions)
+    const { _, help } = parsedArgs
     if (help) { return this.help() }
     const requiredArgs = this.args.filter(arg => !arg.optional)
     const length = _.length
@@ -63,7 +64,7 @@ class Command {
       console.log(createError({ name: this.name, requiredArguments, args, options }))
       return
     }
-    return this.fn(args)
+    return this.fn(parsedArgs)
   }
 }
 
