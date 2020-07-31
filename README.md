@@ -1,6 +1,6 @@
 # Program
 
-command-line interface for deno.
+command-line interface for deno programs.
 
 ## Usage
 ```ts
