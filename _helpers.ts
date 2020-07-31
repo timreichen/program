@@ -97,7 +97,7 @@ export function createHelp({ title, name, usageName, version, description, optio
     const aliasFlag = option.alias ? `-${option.alias}, ` : " ".repeat(4)
     const flag = `--${option.name}`
     const args = option.args ? option.args.map((arg: Argument) => decoreateArgument(arg)).join(" ") : ""
-    return [`${aliasFlag}${flag}${args}`, option.description]
+    return [`${aliasFlag}${flag}${args ? ` ${args}` : ""}`, option.description]
   })
   const argsCollection = args.map((arg: any) => [decoreateArgument(arg), ""])
 
