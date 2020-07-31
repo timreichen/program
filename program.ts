@@ -6,12 +6,13 @@ interface Option {
   description: string
   boolean: boolean
   alias?: string
+  args?: Argument[]
 }
 
 interface Argument {
   name: string
-  optional: boolean
-  multiple: boolean
+  optional?: boolean
+  multiple?: boolean
 }
 
 class Command {
@@ -34,14 +35,14 @@ class Command {
     this.args.push({ name, optional, multiple })
     return this
   }
-  option({ name, description, alias, boolean = false }: { name: string, description: string, alias?: string, boolean?: boolean }) {
-    this.options.push({ name, description, alias, boolean })
+  option({ name, description, alias, args = [], boolean = false }: { name: string, description: string, args?: Argument[], alias?: string, boolean?: boolean }) {
+    this.options.push({ name, description, alias, args, boolean })
     return this
   }
   help() {
     const options = Object.values(this.options).sort((a, b) => a.name.localeCompare(b.name))
     const args = Object.values(this.args).sort((a, b) => a.name.localeCompare(b.name))
-    console.log(createHelp({ title: this.program ? `${this.name}-${this.program.name}` : "", usageName: this.program ? `${this.name} ${this.program.name}`: "", name: this.name, description: this.description, options, args, }))
+    console.log(createHelp({ title: this.program ? `${this.name}-${this.program.name}` : "", usageName: this.program ? `${this.name} ${this.program.name}` : "", name: this.name, description: this.description, options, args, }))
   }
   parse(args: string[]) {
     const options = this.options
