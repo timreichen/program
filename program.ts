@@ -1,5 +1,5 @@
 import { parse } from "https://deno.land/std/flags/mod.ts"
-import { createHelp, createError } from "./_helpers.ts"
+import { createHelp, createError, invalidArgumentError, invalidSubcommandError } from "./_helpers.ts"
 
 interface Option {
   name: string
@@ -18,7 +18,7 @@ interface Argument {
 class Command {
   name: string
   description: string
-  options: Option[]
+  options: { [name: string]: Option }
   args: Argument[]
   fn: Function
   program?: Program
@@ -28,7 +28,7 @@ class Command {
     this.name = name
     this.description = description
     this.fn = fn
-    this.options = []
+    this.options = {}
     this.args = []
   }
   argument({ name, optional = false, multiple = false }: { name: string, optional?: boolean, multiple?: boolean }) {
@@ -36,7 +36,7 @@ class Command {
     return this
   }
   option({ name, description, alias, args = [], boolean = false }: { name: string, description: string, args?: Argument[], alias?: string, boolean?: boolean }) {
-    this.options.push({ name, description, alias, args, boolean })
+    this.options[name] = { name, description, alias, args, boolean }
     return this
   }
   help() {
@@ -45,7 +45,7 @@ class Command {
     console.log(createHelp({ title: this.program ? `${this.name}-${this.program.name}` : "", usageName: this.program ? `${this.name} ${this.program.name}` : "", name: this.name, description: this.description, options, args, }))
   }
   parse(args: string[]) {
-    const options = this.options
+    const options = Object.values(this.options)
     const argParsingOptions = {
       boolean: options.filter((option) => option.boolean).map((option) => option.name),
       alias: options.reduce((object, option) => {
@@ -54,12 +54,19 @@ class Command {
       }, {} as { [name: string]: string }),
     }
     const parsedArgs = parse(args, argParsingOptions)
-    const { _, help } = parsedArgs
+    const { _, help, ...ops } = parsedArgs
     if (help) { return this.help() }
     const requiredArgs = this.args.filter(arg => !arg.optional)
     const length = _.length
+    for (const [key, value] of Object.entries(ops)) {
+      console.log("key", key, value)
+      if (!this.options[key]) {
+        return console.log(invalidArgumentError(`--${key}`))
+      }
+    }
+
     if (length < requiredArgs.length) {
-      const options = this.options
+      const options = Object.values(this.options)
       const args = this.args
       const requiredArguments = requiredArgs.slice(length)
       console.log(createError({ name: this.name, requiredArguments, args, options }))
@@ -84,7 +91,7 @@ export class Program extends Command {
     return command
   }
   help() {
-    const options = this.options.sort((a, b) => a.name.localeCompare(b.name))
+    const options = Object.values(this.options).sort((a, b) => a.name.localeCompare(b.name))
     const commands = Object.values(this.commands).sort((a, b) => a.name.localeCompare(b.name))
     const args = this.args.sort((a, b) => a.name.localeCompare(b.name))
     console.log(createHelp({ title: this.name, name: this.name, version: this.version, description: this.description, options, args, subcommands: (commands as any) }))
@@ -97,7 +104,9 @@ export class Program extends Command {
     }
     const cmd = args.shift() as string
     const command = this.commands[cmd]
-    if (!command) { return this.help() }
+    if (!command) {
+      return console.log(invalidSubcommandError(cmd, Object.keys(this.commands)))
+    }
     return command.parse(args)
   }
 }

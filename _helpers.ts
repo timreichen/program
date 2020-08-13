@@ -141,3 +141,13 @@ export function createError({ name, requiredArguments, options, args, subcommand
   string += `For more information try --help`
   return string
 }
+
+export function invalidSubcommandError(name: string, subcommands: string[]) {
+  let string = `error: The subcommand '${name}' wasn't recognized`
+  return string
+}
+
+export function invalidArgumentError(name: string) {
+  let string = `error: Found argument '${name}' which wasn't expected, or isn't valid in this context`
+  return string
+}
