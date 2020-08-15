@@ -1,11 +1,11 @@
 # Program
 
-command-line interface for deno programs.
+Simple command-line interface for deno programs.
 
 ## Usage
 ```ts
 // cli.ts
-import { Program } from "https://raw.githubusercontent.com/timreichen/program/master/mod.ts"
+import { Program } from "https://deno.land/x/program/mod.ts"
 
 function log(args: any) {
   if (args.quiet) { return }
