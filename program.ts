@@ -1,4 +1,4 @@
-import { parse } from "https://deno.land/std/flags/mod.ts"
+import { parse } from "https://deno.land/std@0.65.0/flags/mod.ts"
 import { createHelp, createError, invalidArgumentError, invalidSubcommandError } from "./_helpers.ts"
 
 interface Option {
@@ -58,9 +58,8 @@ class Command {
     if (help) { return this.help() }
     const requiredArgs = this.args.filter(arg => !arg.optional)
     const length = _.length
-    for (const [key, value] of Object.entries(ops)) {
-      console.log("key", key, value)
-      if (!this.options[key]) {
+    for (const key of Object.keys(ops)) {
+      if (!this.options[key] && !Object.values(this.options).find(option => option.alias === key)) {
         return console.log(invalidArgumentError(`--${key}`))
       }
     }
