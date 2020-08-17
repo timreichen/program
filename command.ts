@@ -102,7 +102,7 @@ export class Command {
       }),
     );
   }
-  parse(args: string[]) {
+  parse(args: string[]): any {
     const options = Object.values(this.options);
     const argParsingOptions = {
       boolean: options.filter((option) => option.boolean).map((option) =>
