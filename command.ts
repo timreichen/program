@@ -158,7 +158,6 @@ export class Command {
       return;
     }
 
-
     return this.fn(parsedArgs);
   }
 }
