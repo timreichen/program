@@ -150,7 +150,7 @@ export function createHelp(
   return string;
 }
 
-export function createError(
+export function missingArgumentsError(
   { name, requiredArguments, options, args, subcommands }: {
     name: string;
     requiredArguments: Argument[];
@@ -174,6 +174,7 @@ export function createError(
 }
 
 export function invalidSubcommandError(name: string, subcommands: string[]) {
+  // TODO add suggestion subcommand: "Did you mean 'name'?"
   let string = `error: The subcommand '${name}' wasn't recognized`;
   return string;
 }

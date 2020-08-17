@@ -1,7 +1,7 @@
 import { parse } from "https://deno.land/std@0.65.0/flags/mod.ts";
 import {
   createHelp,
-  createError,
+  missingArgumentsError,
   invalidArgumentError,
   invalidSubcommandError,
 } from "./_helpers.ts";
@@ -102,7 +102,7 @@ export class Command {
       }),
     );
   }
-  parse(args: string[]): any {
+  parse(args: string[]): unknown {
     const options = Object.values(this.options);
     const argParsingOptions = {
       boolean: options.filter((option) => option.boolean).map((option) =>
@@ -137,7 +137,9 @@ export class Command {
       const args = this.args;
       const requiredArguments = requiredArgs.slice(length);
       console.log(
-        createError({ name: this.name, requiredArguments, args, options }),
+        missingArgumentsError(
+          { name: this.name, requiredArguments, args, options },
+        ),
       );
       return;
     }
