@@ -103,10 +103,6 @@ export class Command {
     );
   }
   parse(args: string[]) {
-    if (!args.length) {
-      return this.help();
-    }
-
     const options = Object.values(this.options);
     const argParsingOptions = {
       boolean: options.filter((option) => option.boolean).map((option) =>
@@ -156,7 +152,7 @@ export class Command {
         );
       }
 
-      return command.fn(args);
+      return command.parse(args);
     }
 
     return this.fn(parsedArgs);
