@@ -1,4 +1,3 @@
-// import { Program } from "https://raw.githubusercontent.com/timreichen/program/master/mod.ts"
 import { Program } from "./program.ts";
 import { invalidSubcommandError } from "./_helpers.ts";
 
@@ -50,7 +49,7 @@ program
     {
       name: "help",
       description: "Prints this message or the help of the given subcommand(s)",
-      fn: help(program),
+      fn: help,
     },
   )
   .argument(
