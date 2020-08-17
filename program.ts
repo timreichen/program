@@ -45,4 +45,10 @@ export class Program extends Command {
       ),
     );
   }
+  parse(args: string[]) {
+    if (!args.length) {
+      return this.help();
+    }
+    super.parse(args);
+  }
 }
