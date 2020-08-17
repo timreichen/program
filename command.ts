@@ -120,6 +120,19 @@ export class Command {
       return this.help();
     }
 
+    if (Object.keys(this.commands).length) {
+      args = [...args];
+      const cmd = args.shift() as string;
+      const command = this.commands[cmd];
+      if (!command) {
+        return console.log(
+          invalidSubcommandError(cmd, Object.keys(this.commands)),
+        );
+      }
+
+      return command.parse(args);
+    }
+    
     const requiredArgs = this.args.filter((arg) => !arg.optional);
     const length = _.length;
     for (const key of Object.keys(ops)) {
@@ -144,18 +157,6 @@ export class Command {
       return;
     }
 
-    if (Object.keys(this.commands).length) {
-      args = [...args];
-      const cmd = args.shift() as string;
-      const command = this.commands[cmd];
-      if (!command) {
-        return console.log(
-          invalidSubcommandError(cmd, Object.keys(this.commands)),
-        );
-      }
-
-      return command.parse(args);
-    }
 
     return this.fn(parsedArgs);
   }
