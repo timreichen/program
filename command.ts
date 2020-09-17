@@ -1,4 +1,4 @@
-import { parse } from "https://deno.land/std@0.65.0/flags/mod.ts";
+import { Args, parse } from "./deps.ts";
 import {
   createHelp,
   missingArgumentsError,
@@ -9,7 +9,7 @@ import {
 export interface Option {
   name: string;
   description: string;
-  boolean: boolean;
+  boolean?: boolean;
   alias?: string;
   args?: Argument[];
 }
@@ -21,61 +21,75 @@ export interface Argument {
   multiple?: boolean;
 }
 
+export type CommandFunction = (args: Args) => unknown;
+
 export class Command {
   name: string;
   description: string;
   commands: { [name: string]: Command };
   options: { [name: string]: Option };
   args: Argument[];
-  fn: Function;
+  fn: CommandFunction;
   parent?: Command;
 
   constructor(
-    { name, description, fn = () => {}, parent }: {
+    {
+      name,
+      description,
+      fn = () => {},
+      parent,
+      commands = {},
+      options = {},
+      args = [],
+    }: {
       parent?: Command;
       name: string;
       description: string;
-      fn: Function;
+      fn: CommandFunction;
+      commands?: { [name: string]: Command };
+      options?: { [name: string]: Option };
+      args?: Argument[];
     },
   ) {
     this.parent = parent;
     this.name = name;
     this.description = description;
     this.fn = fn;
-    this.commands = {};
-    this.options = {};
-    this.args = [];
+    this.commands = commands;
+    this.options = options;
+    this.args = args;
   }
   command(
-    { name, description, fn = (args: (string | number)[]) => {} }: {
+    {
+      name,
+      description,
+      fn = (args: Args) => {},
+      commands = {},
+      options = {},
+      args = [],
+    }: {
       name: string;
       description: string;
-      fn: Function;
+      fn: CommandFunction;
+      commands?: { [name: string]: Command };
+      options?: { [name: string]: Option };
+      args?: Argument[];
     },
   ) {
-    const command = new Command({ parent: this, name, description, fn });
+    const command = new Command(
+      { parent: this, name, description, fn, commands, options, args },
+    );
     this.commands[name] = command;
     return command;
   }
   argument(
-    { name, description, optional = false, multiple = false }: {
-      name: string;
-      description?: string;
-      optional?: boolean;
-      multiple?: boolean;
-    },
+    { name, description, optional = false, multiple = false }: Argument,
   ) {
     this.args.push({ name, description, optional, multiple });
     return this;
   }
   option(
-    { name, description, alias, args = [], boolean = false }: {
-      name: string;
-      description: string;
-      args?: Argument[];
-      alias?: string;
-      boolean?: boolean;
-    },
+    { name, description, alias, args = [], boolean = false }: Option,
   ) {
     this.options[name] = { name, description, alias, args, boolean };
     return this;
@@ -132,7 +146,7 @@ export class Command {
 
       return command.parse(args);
     }
-    
+
     const requiredArgs = this.args.filter((arg) => !arg.optional);
     const length = _.length;
     for (const key of Object.keys(ops)) {
@@ -156,7 +170,6 @@ export class Command {
       );
       return;
     }
-
 
     return this.fn(parsedArgs);
   }

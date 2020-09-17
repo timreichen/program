@@ -1,7 +1,8 @@
 import { Program } from "./program.ts";
 import { invalidSubcommandError } from "./_helpers.ts";
+import type { Args } from "./deps.ts";
 
-function log(args: { [option: string]: string | number }) {
+function log(args: { [option: string]: Args }) {
   if (args.quiet) return;
   console.log(args);
 }
@@ -28,19 +29,18 @@ program
   })
   .argument({ name: "argument", multiple: true, optional: true });
 
-function help(args: string[]) {
-  if (!args.length) {
+function help(args: { [option: string]: string[] | string | number }) {
+  const { _ } = args;
+  if (!Object.keys(_).length) {
     return program.help();
   }
-  for (const cmd of args) {
-    if (!program.commands[cmd]) {
-      return console.log(
-        invalidSubcommandError(cmd, Object.keys(program.commands)),
-      );
-    }
-  }
-  const cmd = args[0];
+  const cmd = (_ as string[])[0];
   const command = program.commands[cmd];
+  if (!command) {
+    return console.log(
+      invalidSubcommandError(cmd, Object.keys(program.commands)),
+    );
+  }
   return command.help();
 }
 

@@ -1,19 +1,29 @@
-import { Command } from "./command.ts";
+import { Argument, Command, CommandFunction, Option } from "./command.ts";
 import { createHelp } from "./_helpers.ts";
 
 export class Program extends Command {
   version?: string;
   constructor(
-    { name, description, version, fn = () => {} }: {
+    {
+      name,
+      description,
+      version,
+      fn = () => {},
+      commands = {},
+      options = {},
+      args = [],
+    }: {
       name: string;
       description: string;
       version?: string;
-      fn?: Function;
+      fn?: CommandFunction;
+      commands?: { [name: string]: Command };
+      options?: { [name: string]: Option };
+      args?: Argument[];
     },
   ) {
-    super({ name, description, fn });
+    super({ name, description, fn, commands, options, args });
     this.version = version;
-    this.commands = {};
     this.option(
       {
         name: "help",
