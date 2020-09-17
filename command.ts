@@ -152,7 +152,7 @@ export class Command {
     for (const key of Object.keys(ops)) {
       if (
         !this.options[key] &&
-        !Object.values(this.options).find((option) => option.alias === key)
+        !options.find((option) => option.alias === key)
       ) {
         console.log(invalidArgumentError(`--${key}`));
         return;
@@ -160,7 +160,6 @@ export class Command {
     }
 
     if (length < requiredArgs.length) {
-      const options = Object.values(this.options);
       const args = this.args;
       const requiredArguments = requiredArgs.slice(length);
       console.log(
