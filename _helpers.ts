@@ -1,4 +1,4 @@
-import { Argument, Option, Command } from "./command.ts";
+import type { Argument, Option, Command } from "./command.ts";
 
 type Collection = string[][];
 
